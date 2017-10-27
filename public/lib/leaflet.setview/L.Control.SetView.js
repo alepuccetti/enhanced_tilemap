@@ -49,6 +49,15 @@ L.SetViewToolbar = L.Class.extend({
       },
       context: {}
     }));
+    this._tools.push(this._createButton({
+      title: "Search Location",
+      className: 'fa fa-search',
+      container: this._toolbarContainer,
+      callback: function() {
+        self._showSearch();
+      },
+      context: {}
+    }));
     
     return container;
 
@@ -274,6 +283,65 @@ L.SetViewToolbar = L.Class.extend({
     L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
     L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
     this._actionsContainer.style.top = '25px';
+    this._actionsContainer.style.display = 'block';
+  },
+  _showSearch: function () {
+    var self = this;
+    var container = this._actionsContainer;
+    // Clean up any old stuff
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+
+    var listItemClass = '';
+    if (this._map.getSize().x < 375) {
+      listItemClass = 'small-screen';
+    }
+
+    this._searchText = "Search";
+    this._zoom = this._map.getZoom();
+
+    var choices = [];
+    for(var i = this._map.getMinZoom(); i <= this._map.getMaxZoom(); i++) {
+      choices.push({
+        display: i,
+        value: i
+      });
+    }
+    this._createInput({
+      container: L.DomUtil.create('li', listItemClass, container),
+      inputType: 'text',
+      placeholder: 'Search',
+      name: 'searchText',
+      value: this._searchText,
+      callback: function(event) {
+        self._searchText = self._getValue(event);
+      }
+    });
+    this._createButton({
+      title: "Click to search the map.",
+      text: "Search",
+      container: L.DomUtil.create('li', listItemClass, container),
+      callback: function() {
+        // Search and return coordinates from first result
+        // API https://nominatim.openstreetmap.org/search?q=%22london%22&format=json
+        var lat = 51.5073219;
+        var lon = -0.1276474;
+        self._map.setView(L.latLng(lat, lon), self._zoom);
+        self._hideActionsToolbar();
+      }
+    });
+    this._createButton({
+      title: "Click to cancel.",
+      text: "Cancel",
+      container: L.DomUtil.create('li', listItemClass, container),
+      callback: function() {
+        self._hideActionsToolbar();
+      }
+    });
+    L.DomUtil.addClass(this._toolbarContainer, 'leaflet-draw-toolbar-nobottom');
+    L.DomUtil.addClass(this._actionsContainer, 'leaflet-draw-actions-bottom');
+    this._actionsContainer.style.top = '50px';
     this._actionsContainer.style.display = 'block';
   },
   _getValue: function(event) {
