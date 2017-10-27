@@ -1,5 +1,5 @@
 # Isolating existing tilemap visualization
-The existing tilemap visualization's code is contained in serval places
+The existing tilemap visualization's code is contained in several places
 * [core_plugins/kbn_vislib_vis_types](https://github.com/elastic/kibana/tree/master/src/core_plugins/kbn_vislib_vis_types) contains the code to add the visualization to kibana and define the options menu.
 * [ui/public/vislib/visualizations](https://github.com/elastic/kibana/tree/master/src/ui/public/vislib/visualizations) contains the underpinnins of the visualization itself
 
